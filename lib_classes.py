@@ -20,6 +20,23 @@ def log(X: Tensor, base: Tensor) -> Tensor:
 
 
 
+#
+def bd(value: Tensor | nn.Parameter) -> str:
+
+    #
+    if isinstance(value, nn.Parameter):
+
+        #
+        return f"{value.data.item(): .2f}"
+
+    #
+    else:
+
+        #
+        return f"{value.item(): .2f}"
+
+
+
 
 ###############################################################################
 ################################## MATH EXPR ##################################
@@ -273,7 +290,7 @@ class MathExpr_Const(MathExpr):
     def __str__(self) -> str:
 
         #
-        return f"{self.const.data.item()}"
+        return bd(self.const)
 
     #
     def to_latex(self) -> str:
@@ -411,19 +428,19 @@ class MathExpr_PolynomialTerm(MathExpr_Composed):
         X = self.compose_forward(X)
 
         #
-        return self.factor * (X ** self.power)
+        return self.factor * X ** ( 1.0 + torch.abs(self.power) )
 
     #
     def __str__(self) -> str:
 
         #
-        return f"{self.factor.data.item()} * {self.compose_str()} ^ {self.power.data.item()}"
+        return f"{bd(self.factor)} * {self.compose_str()} ^ {bd(1.0 + torch.abs(self.power))}"
 
     #
     def to_latex(self) -> str:
 
         #
-        return f"{self.factor.data.item()} * ({self.to_latex_composed()}) ^ {self.power.data.item()}"
+        return f"{bd(self.factor)} \\cdot ({self.to_latex_composed()}) ^ {{ {bd(1.0 + torch.abs(self.power))} }}"
 
 
 
@@ -463,13 +480,13 @@ class MathExpr_ExponentialTerm(MathExpr_Composed):
     def __str__(self) -> str:
 
         #
-        return f"{self.factor.data.item()} * {self.base.data.item()} ^ {self.compose_str()}"
+        return f"{bd(self.factor)} * {bd(1.0 + torch.abs(self.base))} ^ {self.compose_str()}"
 
     #
     def to_latex(self) -> str:
 
         #
-        return f"{self.factor.data.item()} * {self.base.data.item()} ^ {self.to_latex_composed()}"
+        return f"{bd(self.factor)} \\cdot {bd(1.0 + torch.abs(self.base))} ^ {self.to_latex_composed()}"
 
 
 
@@ -510,13 +527,13 @@ class MathExpr_LogarithmTerm(MathExpr_Composed):
     def __str__(self) -> str:
 
         #
-        return f"{self.factor.data.item()} * log_{self.base.data.item()}({self.compose_str()})"
+        return f"{bd(self.factor)} * log_{bd(1.0 + torch.abs(self.base))}({self.compose_str()})"
 
     #
     def to_latex(self) -> str:
 
         #
-        return f"{self.factor.data.item()} * \\log_{{ {self.base.data.item()} }}({self.to_latex_composed()})"
+        return f"{bd(self.factor)} \\cdot \\log_{{ {bd(1.0 + torch.abs(self.base))} }}({self.to_latex_composed()})"
 
 
 
@@ -558,13 +575,13 @@ class MathExpr_InverseTerm(MathExpr_Composed):
     def __str__(self) -> str:
 
         #
-        return f"{self.factor.data.item()}/{self.compose_str()}"
+        return f"{bd(self.factor)}/{self.compose_str()}"
 
     #
     def to_latex(self) -> str:
 
         #
-        return "\\frac{ " + self.factor.data.item() + " } { " + self.to_latex_composed() + " }"
+        return "\\frac{ " + bd(self.factor) + " } { " + self.to_latex_composed() + " }"
 
 
 
@@ -607,13 +624,13 @@ class MathExpr_Sinusoidal(MathExpr_Composed):
     def __str__(self) -> str:
 
         #
-        return f"{self.amplitude.data.item()} * sin({self.frequency.data.item()} * ({self.to_latex_composed()}) + {self.phase.data.item()})"
+        return f"{bd(self.amplitude)} * sin({bd(self.frequency)} * ({self.to_latex_composed()}) + {bd(self.phase)})"
 
     #
     def to_latex(self) -> str:
 
         #
-        return f"{self.amplitude.data.item()} \\dot \\sin({self.frequency.data.item()} \\dot ({self.to_latex_composed()}) + {self.phase.data.item()})"
+        return f"{bd(self.amplitude)} \\cdot \\sin({bd(self.frequency)} \\cdot ({self.to_latex_composed()}) + {bd(self.phase)})"
 
 
 ###############################################################################

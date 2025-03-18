@@ -81,7 +81,7 @@ if __name__ == "__main__":
         try:
 
             #
-            generated_expr: lc.MathExpr = ge.gen_random_math_expr(nb_actions_to_generate=random.randint(1, 10))
+            generated_expr: lc.MathExpr = ge.gen_random_math_expr(nb_actions_to_generate=random.randint(10, 50))
 
             #
             print(f"Generated expr : {generated_expr.to_latex()}")
