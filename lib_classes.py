@@ -428,19 +428,19 @@ class MathExpr_PolynomialTerm(MathExpr_Composed):
         X = self.compose_forward(X)
 
         #
-        return self.factor * X ** ( 1.0 + torch.abs(self.power) )
+        return self.factor * X ** ( torch.ceil(1.0 + torch.abs(self.power)) )
 
     #
     def __str__(self) -> str:
 
         #
-        return f"{bd(self.factor)} * {self.compose_str()} ^ {bd(1.0 + torch.abs(self.power))}"
+        return f"{bd(self.factor)} * {self.compose_str()} ^ {bd(torch.ceil(1.0 + torch.abs(self.power)))}"
 
     #
     def to_latex(self) -> str:
 
         #
-        return f"{bd(self.factor)} \\cdot ({self.to_latex_composed()}) ^ {{ {bd(1.0 + torch.abs(self.power))} }}"
+        return f"{bd(self.factor)} \\cdot ({self.to_latex_composed()}) ^ {{ {bd(torch.ceil(1.0 + torch.abs(self.power)))} }}"
 
 
 
@@ -644,7 +644,7 @@ MATH_EXPRS: dict[str, Callable] = {
     "prod": MathExprEltList_Prod,
     "constant": MathExpr_Const,
     "polynomial": MathExpr_PolynomialTerm,
-    "exponential": MathExpr_ExponentialTerm,
+    # "exponential": MathExpr_ExponentialTerm,
     "logarithmic": MathExpr_LogarithmTerm,
     "inverse": MathExpr_InverseTerm,
     "sinusoidal": MathExpr_Sinusoidal
