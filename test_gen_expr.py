@@ -40,15 +40,20 @@ def calculate_linspaces_of_expr(expr: lc.MathExpr) -> tuple[np.ndarray, np.ndarr
 
 
 #
-def display_expr(expr: lc.MathExpr) -> None:
+def display_expr(expr: lc.MathExpr, nb_curves: int = 10) -> None:
 
     #
     X: np.ndarray
     Y: np.ndarray
-    X, Y = calculate_linspaces_of_expr(expr=expr)
 
     #
-    plt.plot(X, Y)
+    for i in range(nb_curves):
+
+        #
+        X, Y = calculate_linspaces_of_expr(expr=expr.duplicate())
+        plt.plot(X, Y)
+
+    #
     plt.yscale("symlog")
     plt.title(f"${expr.to_latex()}$")
 

@@ -55,6 +55,12 @@ class MathExpr(nn.Module):
         self.parent: Optional[MathExpr] = parent
 
     #
+    def duplicate(self, parent: Optional["MathExpr"] = None) -> "MathExpr":
+
+        #
+        return MathExpr(parent=parent)
+
+    #
     def actions(self, history: list["MathExpr"]) -> list[tuple[str, list["MathExpr"]]]:
 
         #
@@ -122,6 +128,27 @@ class MathExprEltList(MathExpr):
         #
         self.elts: list[MathExpr] = []
 
+
+    #
+    def duplicate_lst(self, new_expr: "MathExprEltList") -> list[MathExpr]:
+
+        #
+        return [elt.duplicate(parent=new_expr) for elt in self.elts]
+
+
+    #
+    def duplicate(self, parent: Optional[MathExpr] = None) -> "MathExprEltList":
+
+        #
+        new_expr: MathExprEltList = MathExprEltList(parent=parent)
+
+        #
+        new_expr.elts = self.duplicate_lst(new_expr=new_expr)
+
+        #
+        return new_expr
+
+
     #
     def actions(self, history: list[MathExpr]) -> list[tuple[str, list[MathExpr]]]:
 
@@ -174,6 +201,19 @@ class MathExprEltList_Sum(MathExprEltList):
         #
         super().__init__(parent=parent)
 
+
+    #
+    def duplicate(self, parent: Optional[MathExpr] = None) -> "MathExprEltList_Sum":
+
+        #
+        new_expr: MathExprEltList_Sum = MathExprEltList_Sum(parent=parent)
+
+        #
+        new_expr.elts = self.duplicate_lst(new_expr=new_expr)
+
+        #
+        return new_expr
+
     #
     def forward(self, X: Tensor) -> Tensor:
 
@@ -222,6 +262,19 @@ class MathExprEltList_Prod(MathExprEltList):
 
         #
         super().__init__(parent=parent)
+
+
+    #
+    def duplicate(self, parent: Optional[MathExpr] = None) -> "MathExprEltList_Prod":
+
+        #
+        new_expr: MathExprEltList_Prod = MathExprEltList_Prod(parent=parent)
+
+        #
+        new_expr.elts = self.duplicate_lst(new_expr=new_expr)
+
+        #
+        return new_expr
 
     #
     def forward(self, X: Tensor) -> Tensor:
@@ -274,6 +327,14 @@ class MathExpr_Const(MathExpr):
         #
         self.const: nn.Parameter = nn.Parameter(torch.randn((1,)))
 
+
+    #
+    def duplicate(self, parent: Optional[MathExpr] = None) -> "MathExpr_Const":
+
+        #
+        return MathExpr_Const(parent=parent)
+
+
     #
     def get_self_parameters(self) -> list[nn.Parameter]:
 
@@ -316,6 +377,26 @@ class MathExpr_Composed(MathExpr):
 
         #
         self.composed: Optional[MathExpr] = None
+
+
+    #
+    def duplicate_composed(self, new_expr: "MathExpr_Composed") -> Optional[MathExpr]:
+
+        #
+        return None if self.composed is None else self.composed.duplicate(parent=new_expr)
+
+
+    #
+    def duplicate(self, parent: Optional[MathExpr] = None) -> "MathExpr_Composed":
+
+        #
+        new_expr: MathExpr_Composed = MathExpr_Composed(parent=parent)
+
+        #
+        new_expr.composed = self.duplicate_composed(new_expr=new_expr)
+
+        #
+        return new_expr
 
 
     #
@@ -415,6 +496,19 @@ class MathExpr_PolynomialTerm(MathExpr_Composed):
         self.factor: nn.Parameter = nn.Parameter(torch.randn((1,)))
         self.power: nn.Parameter = nn.Parameter(torch.randn((1,)))
 
+
+    #
+    def duplicate(self, parent: Optional[MathExpr] = None) -> "MathExpr_PolynomialTerm":
+
+        #
+        new_expr: MathExpr_PolynomialTerm = MathExpr_PolynomialTerm(parent=parent)
+
+        #
+        new_expr.composed = self.duplicate_composed(new_expr=new_expr)
+
+        #
+        return new_expr
+
     #
     def parameters(self) -> list[nn.Parameter]:
 
@@ -460,6 +554,19 @@ class MathExpr_ExponentialTerm(MathExpr_Composed):
         #
         self.factor: nn.Parameter = nn.Parameter(torch.randn((1,)))
         self.base: nn.Parameter = nn.Parameter(torch.randn((1,)))
+
+
+    #
+    def duplicate(self, parent: Optional[MathExpr] = None) -> "MathExpr_ExponentialTerm":
+
+        #
+        new_expr: MathExpr_ExponentialTerm = MathExpr_ExponentialTerm(parent=parent)
+
+        #
+        new_expr.composed = self.duplicate_composed(new_expr=new_expr)
+
+        #
+        return new_expr
 
     #
     def parameters(self) -> list[nn.Parameter]:
@@ -507,6 +614,19 @@ class MathExpr_LogarithmTerm(MathExpr_Composed):
         #
         self.factor: nn.Parameter = nn.Parameter(torch.randn((1,)))
         self.base: nn.Parameter = nn.Parameter(torch.randn((1,)))
+
+
+    #
+    def duplicate(self, parent: Optional[MathExpr] = None) -> "MathExpr_LogarithmTerm":
+
+        #
+        new_expr: MathExpr_LogarithmTerm = MathExpr_LogarithmTerm(parent=parent)
+
+        #
+        new_expr.composed = self.duplicate_composed(new_expr=new_expr)
+
+        #
+        return new_expr
 
     #
     def parameters(self) -> list[nn.Parameter]:
@@ -556,6 +676,19 @@ class MathExpr_InverseTerm(MathExpr_Composed):
         #
         self.factor: nn.Parameter = nn.Parameter(torch.randn((1,)))
 
+
+    #
+    def duplicate(self, parent: Optional[MathExpr] = None) -> "MathExpr_InverseTerm":
+
+        #
+        new_expr: MathExpr_InverseTerm = MathExpr_InverseTerm(parent=parent)
+
+        #
+        new_expr.composed = self.duplicate_composed(new_expr=new_expr)
+
+        #
+        return new_expr
+
     #
     def parameters(self) -> list[nn.Parameter]:
 
@@ -604,6 +737,19 @@ class MathExpr_Sinusoidal(MathExpr_Composed):
         self.amplitude: nn.Parameter = nn.Parameter(torch.randn((1,)))
         self.frequency: nn.Parameter = nn.Parameter(torch.randn((1,)))
         self.phase: nn.Parameter = nn.Parameter(torch.randn((1,)))
+
+
+    #
+    def duplicate(self, parent: Optional[MathExpr] = None) -> "MathExpr_Sinusoidal":
+
+        #
+        new_expr: MathExpr_Sinusoidal = MathExpr_Sinusoidal(parent=parent)
+
+        #
+        new_expr.composed = self.duplicate_composed(new_expr=new_expr)
+
+        #
+        return new_expr
 
     #
     def parameters(self) -> list[nn.Parameter]:
