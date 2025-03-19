@@ -82,7 +82,7 @@ class MathExpr(nn.Module):
     def parameters(self) -> list[nn.Parameter]:
 
         #
-        return self.get_expr_parameters() + self.get_compose_parameters()
+        return self.get_self_parameters() + self.get_compose_parameters()
 
     #
     def forward(self, X: Tensor) -> Tensor:
