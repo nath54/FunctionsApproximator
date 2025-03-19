@@ -115,8 +115,8 @@ def display_exprs(expr1: lc.MathExpr, expr2: lc.MathExpr, title: str = "expressi
     X2, Y2 = calculate_linspaces_of_expr(expr=expr2)
 
     #
-    plt.plot(X1, Y1, "b")
     plt.plot(X2, Y2, "r")
+    plt.plot(X1, Y1, "b")
     #
     plt.yscale("symlog")
     plt.title(title)

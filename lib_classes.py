@@ -510,7 +510,7 @@ class MathExpr_PolynomialTerm(MathExpr_Composed):
         return new_expr
 
     #
-    def parameters(self) -> list[nn.Parameter]:
+    def get_self_parameters(self) -> list[nn.Parameter]:
 
         #
         return [self.factor, self.power]
@@ -569,7 +569,7 @@ class MathExpr_ExponentialTerm(MathExpr_Composed):
         return new_expr
 
     #
-    def parameters(self) -> list[nn.Parameter]:
+    def get_self_parameters(self) -> list[nn.Parameter]:
 
         #
         return [self.base, self.factor]
@@ -629,7 +629,7 @@ class MathExpr_LogarithmTerm(MathExpr_Composed):
         return new_expr
 
     #
-    def parameters(self) -> list[nn.Parameter]:
+    def get_self_parameters(self) -> list[nn.Parameter]:
 
         #
         return [self.base, self.factor]
@@ -690,7 +690,7 @@ class MathExpr_InverseTerm(MathExpr_Composed):
         return new_expr
 
     #
-    def parameters(self) -> list[nn.Parameter]:
+    def get_self_parameters(self) -> list[nn.Parameter]:
 
         #
         return [self.factor]
@@ -752,7 +752,7 @@ class MathExpr_Sinusoidal(MathExpr_Composed):
         return new_expr
 
     #
-    def parameters(self) -> list[nn.Parameter]:
+    def get_self_parameters(self) -> list[nn.Parameter]:
 
         #
         return [self.frequency, self.phase, self.amplitude]
